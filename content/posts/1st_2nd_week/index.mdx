@@ -1,0 +1,93 @@
+---
+title: "Linting and MUI^5 support  "
+date: 2022-06-26
+slug: "/1stAnd2ndWeek"
+tags:
+  - "Linting and MUI^5 support"
+  - "1st week"
+  - "2nd week"
+---
+### React 18 Migration
+
+Because Radis is currently using an outdated version of React, we have chosen to upgrade to React 18.
+
+```tsx
+//pakage.json
+{
+"react": "^18.2.0",
+"react-dom": "^18.2.0"
+}
+```
+
+```tsx
+//index.jsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+); //new way 
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
+### Linting and type checking setup
+
+In essence, there aren't any `github actions` set up in the Radis App that check the code on every push, and with bigger codebases, it's impossible to manually inspect the new code with each new push.
+
+Since the Radis app uses `Eslint` to examine the `linting`, there are already preconfigured guidelines , making it less complicated.
+
+First of all , we  set up the `node environment` into the `runner` using github actions, then we execute the `yarn lint` command to verify the linting.
+
+Because the Radis app uses `TypeScript`, so  we check  the types using `yarn type-check`.
+
+```bash
+# linting check of radis-app
+name: Linting Check for Radis-App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Install Node.js dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run linters
+        run: cd frontend && yarn lint
+      - name: type check
+        run: cd frontend && yarn type-check
+```
+
+### MUI^5 Migration
+
+The earlier version of the Radis app uses MUI 4, however because MUI 5 has some significant improvements, we chose to upgrade for improved support and additional features.
+
+New features :
+
+1.  The `sx`  prop (The material-ui team has replaced `makeStyles` with a much simpler and much better API in v5: sx prop)
+2. Better TypeScript Support .
+
+**For More details :** 
+> **[https://blog.bitsrc.io/material-ui-5-is-coming-heres-what-i-m-excited-about-f04fd72713f5](https://blog.bitsrc.io/material-ui-5-is-coming-heres-what-i-m-excited-about-f04fd72713f5)**

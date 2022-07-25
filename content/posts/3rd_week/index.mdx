@@ -1,0 +1,56 @@
+---
+title: "Benchmarking and performance analysis"
+date: 2022-07-10
+slug: "/3rdWeek"
+tags:
+  - "Benchmarking and performance analysis"
+  - "3rd week"
+---
+
+Radis app uses `useState` to populate data and maintain state; while this works well for small scale applications, as it becomes better over time, handling errors and state changes will become more challenging. As a result, we decided to include **React hook form**.
+
+## Profiling Data
+
+#### > Flamegraph
+
+<p>
+  <img
+    src="./Flamegraph.jpeg"
+    alt="Flamegraph"
+    title="Flamegraph"
+    width="100%"
+  />
+</p>
+
+#### > Rankgraph
+
+<p>
+  <img
+    src="./Rankgraph.jpeg"
+    alt="Flamegraph"
+    title="Flamegraph"
+    width="100%"
+  />
+</p>
+
+#### > Timeline Graph
+
+<p>
+  <img src="./Timeline.jpeg" alt="Flamegraph" title="Flamegraph" width="100%" />
+</p>
+
+#### > Render Count
+
+<p>
+  <img
+    src="./renderCount.png"
+    alt="Flamegraph"
+    title="Flamegraph"
+    width="100%"
+  />
+</p>
+
+### Approches to fix this 
+According to the statistics, the Radis app requires several unnecessary re-renders. I was considering fixing this the traditional method by using
+`React Memo`, but after discussing with mentors, we chose to utilise `React Hook
+Form` instead (because the Radis app is a type of form).

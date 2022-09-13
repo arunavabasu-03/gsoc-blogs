@@ -1,12 +1,14 @@
 ---
 title: "Feature to export spectrum"
-date: 2022-07-30 
-slug: "/7thAnd8thWeek/"
+date: 2022-07-30
+slug: "/7-8"
 tags:
   - "Feature"
+  - "7th week"
+  - "8th week"
 ---
 
-In the radis app one of the most `demanded feature` is to download the spectrum . Now it is possible to download the spectrum in the form of a csv file . 
+In the radis app one of the most `demanded feature` is to download the spectrum . Now it is possible to download the spectrum in the form of a csv file .
 
 ```python
 @app.post("/download-txt")
@@ -27,7 +29,7 @@ async def download_txt(payload: Payload, background_tasks: BackgroundTasks):
         print("Error", exc)
         return {"error": str(exc)}
     else:
-        
+
         wunit = spectrum.get_waveunit()
         iunit = "default"
         spectrum.savetxt(file_path,payload.mode,wunit=wunit,Iunit=iunit)
@@ -38,6 +40,7 @@ async def download_txt(payload: Payload, background_tasks: BackgroundTasks):
         )
 
 ```
+
 <p>
   <img
     src="./Screenshot 2022-09-11 at 9.52.42 PM.png"

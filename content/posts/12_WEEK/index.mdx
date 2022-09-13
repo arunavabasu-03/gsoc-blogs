@@ -1,0 +1,136 @@
+---
+title: "Final Blog "
+date: 2022-09-03
+slug: "/finalEvaluation/"
+tags:
+  - "final evaluation"
+  - "12th week"
+---
+
+# Final Evaluation
+In this phase , i am preety much focusing to add the test files for frontend and backend and also setup the pipeline to run tests for the app . 
+ * **PULL** : https://github.com/suzil/radis-app/pull/660/files#diff-463b3746243bd8670cdd52fb40c5606db2b831a1c35b324759e52773b3c25d48R39
+## Frontend Tesing 
+I have added the test files for the frontend . I have used the jest framework for testing the frontend . I have added the test files to cover maxmimum elements possible. 
+
+### 📦 some test fiels :
+* test for tgas [unit test]:
+```tsx
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable react/react-in-jsx-scope */
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import user from "@testing-library/user-event";
+import App from "../../App";
+describe("testing tgas field ", () => {
+  test("testing tgas field render with defaultValue and perfectly visible", () => {
+    render(<App />);
+    const input = screen.getByLabelText("TGas");
+    expect(input).toBeVisible();
+    expect(input).toBeInTheDocument();
+    expect(input).toHaveValue(300);
+  });
+  test("testing tgas field render with user* given value and perfectly visible", () => {
+    render(<App />);
+    const input = screen.getByLabelText("TGas");
+    expect(input).toBeVisible();
+    expect(input).toBeInTheDocument();
+    fireEvent.input(input, {
+      target: { value: 100 },
+    });
+    expect(input).toHaveValue(100);
+  });
+  test("testing tgas field validation for out of range values", async () => {
+    render(<App />);
+    const input = screen.getByLabelText("TGas");
+    const button = screen.getByRole("button", {
+      name: /new plot/i,
+    });
+    fireEvent.input(input, {
+      target: { value: 20000000 },
+    });
+    user.click(button);
+    await waitFor(async () => {
+      expect(
+        screen.getByText("Tgas must be between 1K and 9000K")
+      ).toBeInTheDocument();
+    });
+  });
+  test("testing tgas field validation for undefined fields", async () => {
+    render(<App />);
+    const input = screen.getByLabelText("TGas");
+    const button = screen.getByRole("button", {
+      name: /new plot/i,
+    });
+    user.clear(input);
+    user.click(button);
+    await waitFor(async () => {
+      expect(screen.getByText("Tgas must be defined")).toBeInTheDocument();
+    });
+  });
+});
+```
+* integration testing :
+
+```tsx
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable react/react-in-jsx-scope */
+import { fireEvent, render, screen } from "@testing-library/react";
+import App from "../App";
+import { Database as TDatabase } from "../components/types";
+describe("testing: rendering slit switch based on mode ", () => {
+  test("testing : when mode is  absorbance*  the simulate slit switch is not in  the DOM", () => {
+    render(<App />);
+    const button = screen.queryByTestId("slit-switch-testid");
+    expect(button).not.toBeInTheDocument();
+  });
+  test("testing : when mode is  radiance*  the simulate slit switch is in the DOM", () => {
+    render(<App />);
+    const dropdown = screen.getByTestId("mode-testid");
+    fireEvent.change(dropdown, { target: { value: "radiance_noslit" } });
+    const button = screen.getByTestId("slit-switch-testid");
+    expect(button).toBeInTheDocument();
+  });
+  test("testing : when mode is  transmittance*  the simulate slit switch is in the DOM", () => {
+    render(<App />);
+    const dropdown = screen.getByTestId("mode-testid");
+    fireEvent.change(dropdown, { target: { value: "transmittance_noslit" } });
+    const button = screen.getByTestId("slit-switch-testid");
+    expect(button).toBeInTheDocument();
+  });
+});
+  test("testing : when database is  GEISA*  the non-equilibrium switch is not in the DOM", () => {
+    render(<App />);
+    const button = screen.getByTestId("non-equilibrium-switch-testid");
+    const dropdown = screen.getByTestId("database-testid");
+    fireEvent.change(dropdown, { target: { value: TDatabase.GEISA } });
+    expect(button).not.toBeInTheDocument();
+  });
+
+```
+
+## Backend Testing
+
+I have added the test files for the backend . I have used the pytest framework for testing the backend . 
+
+*  📦 `calculate-spectrum` endpoint :
+
+```python
+@pytest.mark.anyio
+async def test_calculate_spectrum():
+    async with AsyncClient(app=app, base_url="https://api.radis.app") as ac:
+         with open('./mocks/request.json', 'r') as f:
+              client_request = json.load(f)
+              request_json = json.dumps(client_request)
+         response = await ac.post("/calculate-spectrum",json=request_json)
+         # open the response.json 
+         with open('./mocks/response.json', 'r') as f:
+              server_response = json.load(f)
+              response_json = json.dumps(server_response)
+    assert response.status_code == 200
+    assert response.json() == response_json
+
+```
+
+
+
+Thanks .
